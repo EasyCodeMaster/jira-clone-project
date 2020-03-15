@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const chalk = require('chalk')
 const dotenv = require('dotenv')
 const server = require('../schemas')
+const path = require('path')
 
 dotenv.config()
 const app = express()
@@ -24,6 +25,12 @@ mongoose.connect(process.env.ATLAS_URI, {
 
 mongoose.connection.once('open', () => {
   console.log(chalk.bgGreen('MongoDB connected'))
+})
+
+app.use(express.static(path.join(__dirname, '../client/build')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'))
 })
 
 server.applyMiddleware({ app })
